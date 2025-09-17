@@ -1,7 +1,8 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { categoryServices } from '../services/categoryServices.js'
+import { categoryServices, categoryServicesGet } from '../services/categoryServices.js'
 
 const categoryController = asyncHandler(async (req, res) => {
+    console.log("category:",req.body)
     const { name } = req.body;
     const category = await categoryServices(name)
     res.status(201).json({
@@ -11,9 +12,15 @@ const categoryController = asyncHandler(async (req, res) => {
     });
 })
 
-const getCategories = async () => {
-    const categories = await Category.find();
-    res.json(categories);
-}
 
-export { categoryController, getCategories }
+
+const getCategoryController = asyncHandler(async (req, res) => {
+    const categories = await categoryServicesGet();
+    res.status(200).json({
+        success: true,
+        message: "Categories fetched successfully",
+        data: categories,
+    });
+});
+
+export { categoryController, getCategoryController }

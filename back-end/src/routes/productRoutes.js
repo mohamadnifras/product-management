@@ -1,19 +1,20 @@
 import express from 'express'
 import authenticate from '../middlewares/authMiddleware.js';
-import {categoryController,getCategories} from '../controllers/categoryController.js'
-import {createSubCategory,getSubCategory} from '../controllers/subCategoryController.js'
+import {categoryController,getCategoryController} from '../controllers/categoryController.js'
+import {createSubCategory,getSubCategoryController} from '../controllers/subCategoryController.js'
 import upload from '../middlewares/uploadMiddleware.js';
-import {createProduct} from "../controllers/productControllers.js"
+import {createProduct,getProducts} from "../controllers/productControllers.js"
 
 const router = express.Router();
 //cetegory
-router.post("/cetegory",authenticate, categoryController);
-router.get("/cetegory",authenticate, getCategories)
+router.post("/category",authenticate, categoryController);
+router.get("/category",authenticate, getCategoryController)
 //subCategory
-router.post("/subCetegory",authenticate,createSubCategory )
-router.get("/subCetegory",authenticate,getSubCategory )
+router.post("/subCategory",authenticate,createSubCategory )
+router.get("/subCategory",authenticate,getSubCategoryController )
 //product
 router.post("/product",authenticate,upload.fields([{ name: 'image', maxCount: 5 }]),createProduct)
+router.get("/product",authenticate, getProducts);
 
 
 

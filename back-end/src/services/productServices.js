@@ -4,7 +4,9 @@ import CustomError from "../utils/customError.js";
 
 
 const productService = async({ title, description, subCategoryName, variants, images })=>{
+    console.log("product:",{ title, description, subCategoryName, variants, images } )
   const subCategory = await SubCategory.findOne({ name: subCategoryName }).populate("category");
+  console.log("subCategory:" ,subCategory)
   if (!subCategory) throw new CustomError("SubCategory not found", 404);
    // category is inside subCategory.category
   const categoryId = subCategory.category._id;
@@ -27,4 +29,27 @@ const productService = async({ title, description, subCategoryName, variants, im
   return populatedProduct;
 }
 
-export {productService}
+
+const getProductsService = async (page, limit) => {
+  const skip = (page - 1) * limit;
+
+  
+  const total = await Product.countDocuments();
+
+
+  const products = await Product.find()
+    .populate("category", "name")
+    .populate("subCategory", "name")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  return {
+    products,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
+};
+
+
+export {productService,getProductsService}

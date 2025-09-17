@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { subCategoryServices } from '../services/subCategoryServices.js'
+import { subCategoryServices, subCategoryServicesGet } from '../services/subCategoryServices.js'
 
 const createSubCategory = asyncHandler(async (req, res) => {
     const { name, categoryName } = req.body;
@@ -12,9 +12,13 @@ const createSubCategory = asyncHandler(async (req, res) => {
 
 });
 
-const getSubCategory = async () => {
-    const subCategories = await SubCategory.find().populate("category");
-    res.json(subCategories);
-}
+const getSubCategoryController = asyncHandler(async (req, res) => {
+    const subCategories = await subCategoryServicesGet();
+    res.status(200).json({
+        success: true,
+        message: "SubCategories fetched successfully",
+        data: subCategories,
+    });
+});
 
-export { createSubCategory,getSubCategory }
+export { createSubCategory,getSubCategoryController }

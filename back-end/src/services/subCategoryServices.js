@@ -26,4 +26,16 @@ const subCategoryServices = async (name, categoryName) => {
     }
 }
 
-export { subCategoryServices }
+
+const subCategoryServicesGet = async () => {
+  try {
+    
+    const subCategories = await SubCategory.find().populate("category", "name");
+    return subCategories;
+  } catch (error) {
+    throw new CustomError("Failed to fetch subcategories", 500);
+  }
+};
+
+
+export { subCategoryServices, subCategoryServicesGet }

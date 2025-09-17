@@ -21,7 +21,7 @@ export const signUp = createAsyncThunk("auth/signUp", async (userData, { rejectW
 
 export const signIn = createAsyncThunk("auth/signIn", async (userData, { rejectWithValue }) => {
     try {
-        const response = axiosInstance.post("/auth/sign-in", userData);
+        const response =  axiosInstance.post("/auth/sign-in", userData);
         return (await response).data.user
     } catch (error) {
         return rejectWithValue(handleError(error))
