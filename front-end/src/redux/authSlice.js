@@ -56,6 +56,18 @@ export const logoutUser = createAsyncThunk(
 
 )
 
+export const refreshToken = createAsyncThunk(
+    'auth/refreshToken',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get("");
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+
 
 const authSlice = createSlice({
     name: "auth",

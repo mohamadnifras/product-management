@@ -3,6 +3,8 @@ import { signInValidation, signUpValidation } from "../utils/validators.js"
 import CustomError from "../utils/customError.js";
 import { signUpServices, signInServices, getUserDetails, logoutUserServices } from "../services/authServices.js"
 import { generateAccessToken } from "../utils/generateToken.js";
+import jwt from "jsonwebtoken";
+
 
 
 const signUpController = asyncHandler(async (req, res) => {
@@ -84,7 +86,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         // Verify the refresh token
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-        const newAccessToken = generateAccessToken({ id: decoded.id, role: decoded.role, email: decoded.email });
+        const newAccessToken = generateAccessToken({ id: decoded.id, email: decoded.email });
 
         // Set the new access token as a cookie
         res.cookie('accessToken', newAccessToken, {

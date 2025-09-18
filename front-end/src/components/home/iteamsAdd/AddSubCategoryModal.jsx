@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createSubCategory } from "../../redux/subCategorySlice";
-import {fetchCategories} from "../../redux/categorySlice"
+import { createSubCategory,fetchSubCategories } from "../../../redux/subCategorySlice";
+import {fetchCategories} from "../../../redux/categorySlice"
 
 function AddSubCategoryModal({ isOpen, onClose }) {
   const [name, setName] = useState("");
@@ -16,6 +16,10 @@ function AddSubCategoryModal({ isOpen, onClose }) {
     }
   }, [isOpen, dispatch]);
 
+  useEffect(()=>{
+    dispatch(fetchSubCategories())
+  },[dispatch])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!categoryName || !name) {
@@ -27,8 +31,9 @@ function AddSubCategoryModal({ isOpen, onClose }) {
       const resultAction = await dispatch(
         createSubCategory({ categoryName, name })
       );
+      dispatch(fetchSubCategories())
 
-      // Check if request was successful
+      
       if (createSubCategory.fulfilled.match(resultAction)) {
         alert(
           resultAction.payload.message || "Sub Category created successfully!"

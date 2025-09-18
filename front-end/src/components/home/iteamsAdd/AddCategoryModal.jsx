@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createCategory } from "../../redux/categorySlice";
+import { createCategory } from "../../../redux/categorySlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,9 +20,10 @@ function AddCategoryModal({ isOpen, onClose }) {
       if (createCategory.fulfilled.match(resultAction)) {
           setName("");
           onClose();
-       toast.success(resultAction.payload.message || "Category added successfully!");
+       toast.success(resultAction.payload || "Category added successfully!");
       } else {
-        toast.error(resultAction.payload.message || "Failed to add category");
+        console.log(resultAction)
+        toast.error(resultAction.payload || "Failed to add category");
       }
     } catch (error) {
       toast.error("Something went wrong", error);

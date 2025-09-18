@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { SlArrowRight } from "react-icons/sl";
-import AddCategoryModal from "./AddCategoryModal";
-import AddSubCategoryModal from "./AddSubCategoryModal";
-import AddProduct from "./AddProduct";
+import AddCategoryModal from "./iteamsAdd/AddCategoryModal";
+import AddSubCategoryModal from "./iteamsAdd/AddSubCategoryModal";
+import AddProduct from "./iteamsAdd/AddProduct";
 
 function IteamsAdd() {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
 
                 // Redirect to login if refresh fails
                 if (refreshError.response?.status === 401) {
-                    window.location.href = "/login";
+                    window.location.href = "/signin";
                 }
                 return Promise.reject(refreshError);
             }

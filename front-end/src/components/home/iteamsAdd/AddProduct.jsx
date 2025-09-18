@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchSubCategories } from "../../redux/subCategorySlice";
+import { fetchSubCategories } from "../../../redux/subCategorySlice";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { createProduct } from "../../redux/productSlice";
+import { createProduct } from "../../../redux/productSlice";
 import { RiImageAddLine } from "react-icons/ri";
 
 function AddProduct({ isOpen, onClose }) {
@@ -13,6 +13,7 @@ function AddProduct({ isOpen, onClose }) {
   const [images, setImages] = useState([]);
   const dispatch = useDispatch();
   const { subCategories } = useSelector((state) => state.subCategory);
+  const { loading } = useSelector((state) => state.products);
 
   useEffect(() => {
     if (isOpen) {
@@ -59,15 +60,14 @@ function AddProduct({ isOpen, onClose }) {
     }
   };
 
-  const handleClose = ()=>{
-      setTitle("");
-      setDescription("");
-      setSubCategory("");
-      setVariants([{ ram: "", price: "", qty: "" }]);
-      setImages([]);
-      onClose();
-
-  }
+  const handleClose = () => {
+    setTitle("");
+    setDescription("");
+    setSubCategory("");
+    setVariants([{ ram: "", price: "", qty: "" }]);
+    setImages([]);
+    onClose();
+  };
 
   if (!isOpen) return null;
 
@@ -213,7 +213,7 @@ function AddProduct({ isOpen, onClose }) {
                   htmlFor="upload-input"
                   className="w-20 h-20 border-2 border-dashed rounded flex items-center justify-center cursor-pointer text-gray-400"
                 >
-                  <RiImageAddLine size={30}/>
+                  <RiImageAddLine size={30} />
                 </label>
                 <input
                   id="upload-input"
@@ -228,9 +228,38 @@ function AddProduct({ isOpen, onClose }) {
           <div className="flex justify-center space-x-2">
             <button
               onClick={handleSubmit}
-              className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+              disabled={loading}
+              className={`flex items-center justify-center bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              ADD
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 mr-2 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  Submitting...
+                </>
+              ) : (
+                "SUBMIT"
+              )}
             </button>
             <button
               onClick={handleClose}
