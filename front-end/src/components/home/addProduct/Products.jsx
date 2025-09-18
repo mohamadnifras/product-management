@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 function Products() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { products, error, loading, page, pages } = useSelector(
+  const { products, loading, page, pages } = useSelector(
     (state) => state.products
   );
   console.log(pages,page, "product sugamano");
@@ -23,7 +23,6 @@ function Products() {
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
   return (
     <div className="p-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

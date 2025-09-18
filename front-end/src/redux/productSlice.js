@@ -57,6 +57,7 @@ export const createWishlist = createAsyncThunk("product/createWishlist", async (
 export const getWishlist = createAsyncThunk("product/getWishlist", async (_, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.get("/wishlist/");
+        console.log(response.data,"responseWishlist")
         return response.data
     } catch (error) {
         return rejectWithValue(handleError(error))
@@ -139,7 +140,7 @@ const productSlice = createSlice({
             })
             .addCase(getWishlist.fulfilled, (state, action) => {
                 state.wishlistLoading = false;
-                state.wishlist = action.payload.wishlist || action.payload.data || [];
+                state.wishlist = action.payload.items || action.payload.data || [];
             })
             .addCase(getWishlist.rejected, (state, action) => {
                 state.wishlistLoading = false;

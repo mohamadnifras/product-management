@@ -4,9 +4,11 @@ import { FiX } from "react-icons/fi";
 import { GoHeart } from "react-icons/go";
 import { FaShoppingCart } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
+import Wishlist from "./Wishlist";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   return (
@@ -26,7 +28,9 @@ function Navbar() {
 
           <div className="hidden md:flex space-x-6 md:w-[50%] justify-end text-white">
                {/* Wishlist */}
-        <button className="hover:text-blue-600 flex items-center gap-1">
+        <button 
+        onClick={() => setIsWishlistOpen(true)}
+        className="hover:text-blue-600 flex items-center gap-1">
           <GoHeart size={22} />
           <span className="text-sm">Wishlist</span>
         </button>
@@ -82,6 +86,10 @@ function Navbar() {
           </a>
         </div>
       )}
+      <Wishlist 
+      isWishlistOpen={isWishlistOpen}
+        setIsWishlistOpen={setIsWishlistOpen}
+      />
     </nav>
   );
 }
