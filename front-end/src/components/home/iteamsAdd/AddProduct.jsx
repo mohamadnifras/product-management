@@ -11,6 +11,7 @@ function AddProduct({ isOpen, onClose }) {
   const [subCategory, setSubCategory] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
+  
   const dispatch = useDispatch();
   const { subCategories } = useSelector((state) => state.subCategory);
   const { loading } = useSelector((state) => state.products);

@@ -46,7 +46,7 @@ const signInController = asyncHandler(async (req, res) => {
     });
 });
 
-const getLoggedInUser = asyncHandler(async () => {
+const getLoggedInUser = asyncHandler(async (req,res) => {
     const user = await getUserDetails(req.user.id);
     if (!user) {
         throw new CustomError("User not found", 404)

@@ -2,33 +2,41 @@ import React, { useEffect, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { fetchSubCategories } from "../../../redux/subCategorySlice";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchCategories} from "../../../redux/categorySlice"
+import { fetchCategories } from "../../../redux/categorySlice";
+// import { fetchProduct } from "../../../redux/productSlice";
 
-function Categories() {
+
+function Categories({ selectedSubCategories, setSelectedSubCategories }) {
   const [openCategory, setOpenCategory] = useState("Laptop"); // default open
-  const [selected, setSelected] = useState([]);
   const dispatch = useDispatch();
   const { subCategories } = useSelector((state) => state.subCategory);
   const { categories } = useSelector((state) => state.category);
+  
   console.log(subCategories, "hello");
   console.log(categories, "sugam");
   useEffect(() => {
     dispatch(fetchSubCategories());
+    dispatch(fetchCategories());
   }, [dispatch]);
-  useEffect(() => {
-    dispatch((fetchCategories()));
-  }, [dispatch]);
-
 
   const toggleCategory = (name) => {
     setOpenCategory(openCategory === name ? null : name);
   };
 
-  const toggleSubCategory = (item) => {
-    setSelected((prev) =>
-      prev.includes(item) ? prev.filter((s) => s !== item) : [...prev, item]
+
+
+//   const toggleSubCategory = (item) => {
+//     setSelected((prev) =>
+//       prev.includes(item) ? prev.filter((s) => s !== item) : [...prev, item]
+//     );
+//   };
+  const toggleSubCategory = (id) => {
+    setSelectedSubCategories((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
     );
   };
+
+
   return (
     <div className="w-60 border rounded p-4">
       <h2 className="text-[#003F62] font-medium mb-3 text-[16px]">
@@ -36,12 +44,12 @@ function Categories() {
       </h2>
       <p
         className="cursor-pointer flex justify-between items-center text-black mb-2 text-[16px]"
-        onClick={() => toggleCategory("all")}
+        onClick={() => setSelectedSubCategories([])}
       >
         All categories
       </p>
 
-           {categories?.map((cat) => {
+      {categories?.map((cat) => {
         const subs = subCategories.filter(
           (sub) => sub.category?._id === cat._id
         );
@@ -70,7 +78,7 @@ function Categories() {
                   >
                     <input
                       type="checkbox"
-                      checked={selected.includes(sub._id)}
+                      checked={selectedSubCategories.includes(sub._id)}
                       onChange={() => toggleSubCategory(sub._id)}
                       className="w-4 h-4"
                     />

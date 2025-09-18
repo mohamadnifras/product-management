@@ -26,9 +26,15 @@ export const createProduct = createAsyncThunk("product/createProduct", async (fo
 
 export const fetchProduct = createAsyncThunk(
     "product/fetchProduct",
-    async ({ page, limit }, { rejectWithValue }) => {
+    async ({ page, limit, subCategoryIds = [] }, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(`/product/product?page=${page}&limit=${limit}`);
+             let url = `/product/product?page=${page}&limit=${limit}`;
+      
+      
+      if (subCategoryIds.length > 0) {
+        url += `&subCategoryIds=${subCategoryIds.join(",")}`;
+      }
+            const response = await axiosInstance.get(url);
             return response.data
         } catch (error) {
             return rejectWithValue(handleError(error))
@@ -57,7 +63,7 @@ export const createWishlist = createAsyncThunk("product/createWishlist", async (
 export const getWishlist = createAsyncThunk("product/getWishlist", async (_, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.get("/wishlist/");
-        console.log(response.data,"responseWishlist")
+        console.log(response.data, "responseWishlist")
         return response.data
     } catch (error) {
         return rejectWithValue(handleError(error))
@@ -72,6 +78,21 @@ export const removeWishlist = createAsyncThunk("product/removeWishlist", async (
         return rejectWithValue(handleError(error))
     }
 })
+
+export const updateProduct = createAsyncThunk(
+    "product/updateProduct",
+    async ({ id, formData }, { rejectWithValue }) => {
+        console.log({ id, formData },"id, formData ")
+        try {
+            const response = await axiosInstance.put(`/product/${id}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
 
 
 const productSlice = createSlice({
@@ -159,6 +180,26 @@ const productSlice = createSlice({
             })
             .addCase(removeWishlist.rejected, (state, action) => {
                 state.wishlistLoading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateProduct.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateProduct.fulfilled, (state, action) => {
+                state.loading = false;
+                state.success = true;
+                state.product = action.payload.data;
+                // update in list
+                const idx = state.products.findIndex(
+                    (p) => p._id === action.payload.data._id
+                );
+                if (idx !== -1) {
+                    state.products[idx] = action.payload.data;
+                }
+            })
+            .addCase(updateProduct.rejected, (state, action) => {
+                state.loading = false;
                 state.error = action.payload;
             });
 

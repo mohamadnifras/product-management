@@ -1,15 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdMenu } from "react-icons/io";
 import { FiX } from "react-icons/fi";
 import { GoHeart } from "react-icons/go";
 import { FaShoppingCart } from "react-icons/fa";
-import { FiLogIn } from "react-icons/fi";
 import Wishlist from "./Wishlist";
+import { useDispatch, useSelector } from "react-redux";
+import {getWishlist} from "../../redux/productSlice"
+import {logoutUser,fetchUserDetails} from "../../redux/authSlice"
+import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+
+
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const { wishlist } = useSelector((state) => state.products);
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const {user,loading} = useSelector((state)=> state.auth)
+console.log(wishlist,"navbar")
+useEffect(()=>{
+dispatch(getWishlist())
+},[dispatch])
 
+useEffect(()=>{
+dispatch(fetchUserDetails())
+},[dispatch])
+
+const handleSignIn = () => {
+    navigate("/signin")
+  };
+
+  const handleSignOut = () => {
+    dispatch(logoutUser());
+  };
   const toggleMenu = () => setIsOpen(!isOpen);
   return (
     <nav className="bg-[#003F62] shadow-md fixed w-full top-0 left-0 z-50 p-2">
@@ -30,9 +55,15 @@ function Navbar() {
                {/* Wishlist */}
         <button 
         onClick={() => setIsWishlistOpen(true)}
-        className="hover:text-blue-600 flex items-center gap-1">
+        className="relative hover:text-blue-600 flex items-center gap-1">
           <GoHeart size={22} />
+          {wishlist?.length > 0 && (
+        <span className="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-semibold px-1 py-0 rounded-full">
+          {wishlist.length}
+        </span>
+      )}
           <span className="text-sm">Wishlist</span>
+
         </button>
 
         {/* Cart */}
@@ -42,10 +73,27 @@ function Navbar() {
         </button>
 
         {/* Sign In */}
-        <button className="hover:text-blue-600 flex items-center gap-1">
+      <div>
+      {user ? (
+        <button
+          onClick={handleSignOut}
+          className="hover:text-blue-600 flex items-center gap-1"
+          disabled={loading}
+        >
+          <FiLogOut size={22} />
+          <span className="text-sm">Sign Out</span>
+        </button>
+      ) : (
+        <button
+          onClick={handleSignIn}
+          className="hover:text-blue-600 flex items-center gap-1"
+          disabled={loading}
+        >
           <FiLogIn size={22} />
           <span className="text-sm">Sign In</span>
         </button>
+      )}
+    </div>
           </div>
 
           {/* Mobile Menu Button */}

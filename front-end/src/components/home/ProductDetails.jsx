@@ -8,14 +8,19 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { Heart } from "lucide-react";
 import { SlArrowRight } from "react-icons/sl";
+import EditProduct from "./iteamsAdd/EditProduct";
 
 function ProductDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { product, loading, wishlist } = useSelector((state) => state.products);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isEditModal,setIsEditModal] = useState(false)
 
-  console.log(wishlist, "wishlist");
+  
   useEffect(() => {
     dispatch(getProductById(id));
   }, [dispatch, id]);
@@ -26,9 +31,6 @@ function ProductDetails() {
     }
   }, [product]);
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const navigate = useNavigate();
 
@@ -162,7 +164,9 @@ function ProductDetails() {
 
           {/* Buttons */}
           <div className="flex items-center gap-4">
-            <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium px-6 py-3 rounded-full">
+            <button 
+            onClick={()=>setIsEditModal(true)}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium px-6 py-3 rounded-full">
               Edit product
             </button>
             <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium px-6 py-3 rounded-full">
@@ -179,6 +183,11 @@ function ProductDetails() {
           </div>
         </div>
       </div>
+      <EditProduct 
+      isOpen={isEditModal}
+        onClose={() => setIsEditModal(false)}
+        productData={product}
+      />
     </div>
   );
 }

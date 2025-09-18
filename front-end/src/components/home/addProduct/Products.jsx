@@ -3,18 +3,24 @@ import { fetchProduct } from "../../../redux/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { fetchUserDetails } from "../../../redux/authSlice";
 
 
-function Products() {
+function Products({ selectedSubCategories }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { products, loading, page, pages } = useSelector(
     (state) => state.products
   );
+  const {user} = useSelector((state)=> state.auth)
   console.log(pages,page, "product sugamano");
   useEffect(() => {
-    dispatch(fetchProduct({ page: 1, limit: 10 }));
-  }, [dispatch]);
+    dispatch(fetchProduct({ page: 1, limit: 10, subCategoryIds: selectedSubCategories || [], }));
+  }, [dispatch, selectedSubCategories]);
+
+  useEffect(()=>{
+  dispatch(fetchUserDetails())
+  },[dispatch])
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= pages) {
@@ -23,6 +29,7 @@ function Products() {
   };
 
   if (loading) return <p>Loading...</p>;
+  if (!user) return <p>Pleas Login🔐</p>;
   return (
     <div className="p-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

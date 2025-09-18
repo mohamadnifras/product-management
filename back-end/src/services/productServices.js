@@ -39,14 +39,16 @@ const productService = async({ title, description, subCategoryName, variants, im
 }
 
 
-const getProductsService = async (page, limit) => {
+const getProductsService = async (page, limit,subCategoryIds = []) => {
   const skip = (page - 1) * limit;
 
   
-  const total = await Product.countDocuments();
+ const filter = subCategoryIds.length > 0 ? { subCategory: { $in: subCategoryIds } } : {};
+
+  const total = await Product.countDocuments(filter);
 
 
-  const products = await Product.find()
+  const products = await Product.find(filter)
     .populate("category", "name")
     .populate("subCategory", "name")
     .sort({ createdAt: -1 })
@@ -74,4 +76,48 @@ const getProductsService = async (page, limit) => {
 };
 
 
-export {productService,getProductsService,getProductByIdService}
+const updateProductService = async (
+  productId,
+  { title, description, subCategoryName, variants, images }
+) => {
+  const product = await Product.findById(productId);
+  if (!product) {
+    throw new CustomError("Product not found", 404);
+  }
+
+  // If subCategoryName is provided, validate it
+  let subCategoryId = product.subCategory;
+  let categoryId = product.category;
+
+  if (subCategoryName) {
+    const subCategory = await SubCategory.findOne({
+      name: subCategoryName,
+    }).populate("category");
+
+    if (!subCategory) throw new CustomError("SubCategory not found", 404);
+
+    subCategoryId = subCategory._id;
+    categoryId = subCategory.category._id;
+  }
+
+ 
+  const finalImages = images.length > 0 ? images : product.images;
+
+  product.title = title || product.title;
+  product.description = description || product.description;
+  product.variants = variants || product.variants;
+  product.images = finalImages;
+  product.subCategory = subCategoryId;
+  product.category = categoryId;
+
+  await product.save();
+
+  const populatedProduct = await Product.findById(product._id)
+    .populate("category", "name")
+    .populate("subCategory", "name");
+
+  return populatedProduct;
+};
+
+
+export {productService,getProductsService,getProductByIdService,updateProductService}

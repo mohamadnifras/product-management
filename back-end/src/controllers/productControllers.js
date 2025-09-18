@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { productService, getProductsService, getProductByIdService } from "../services/productServices.js"
+import { productService, getProductsService, getProductByIdService,updateProductService } from "../services/productServices.js"
 
 
 const createProduct = asyncHandler(async (req, res) => {
@@ -26,8 +26,11 @@ const createProduct = asyncHandler(async (req, res) => {
 const getProducts = asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const subCategoryIds = req.query.subCategoryIds
+    ? req.query.subCategoryIds.split(",")
+    : [];
 
-    const { products, total, totalPages } = await getProductsService(page, limit);
+    const { products, total, totalPages } = await getProductsService(page, limit,subCategoryIds);
 
     res.status(200).json({
         success: true,
@@ -40,7 +43,7 @@ const getProducts = asyncHandler(async (req, res) => {
 });
 
 
- const getProductById = asyncHandler(async (req, res) => {
+const getProductById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const product = await getProductByIdService(id);
@@ -51,5 +54,25 @@ const getProducts = asyncHandler(async (req, res) => {
     });
 });
 
-export { createProduct, getProducts,getProductById }
+const updateProduct = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { title, description, subCategoryName, variants } = req.body;
+    const parsedVariants = typeof variants === "string" ? JSON.parse(variants) : variants;
+    const newImages = req.files?.image?.map((file) => file.path) || [];
+    const updatedProduct = await updateProductService(id, {
+    title,
+    description,
+    subCategoryName,
+    variants: parsedVariants,
+    images: newImages,
+  });
+  res.status(200).json({
+    success: true,
+    message: "Product updated successfully",
+    data: updatedProduct,
+  });
+
+})
+
+export { createProduct, getProducts, getProductById, updateProduct }
 
