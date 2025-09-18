@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 const validationSchema = Yup.object().shape({
 
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -33,13 +34,14 @@ const handleSubmit = async (values) => {
           toast.success(respons.message);
         });
     } catch (error) {
+      console.log(error,"error")
       toast.error(error);
     }
   };
 
   useEffect(()=>{
     if(user){
-      navigate("/")
+      navigate("/home")
     }
   },[user,navigate])
   return (
@@ -118,7 +120,7 @@ const handleSubmit = async (values) => {
           </p>
 
           <button 
-          onClick={()=> navigate("/signup")}
+          onClick={()=> navigate("/")}
           className="px-10 py-3 rounded-full border border-white text-white hover:bg-white hover:text-[#04364A] transition">
             SIGN UP
           </button>

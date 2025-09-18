@@ -25,19 +25,31 @@ function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (values) => {
-    console.log("value:",values)
-    try {
-      await dispatch(signUp(values))
-        .unwrap()
-        .then((response) => {
-          navigate("/signin");
-          toast.success(response?.data?.message || "Registered Successfully");
-        });
-    } catch (error) {
-      toast.error(error);
-    }
-  };
+  // const handleSubmit = async (values) => {
+  //   try {
+  //     await dispatch(signUp(values))
+  //       .unwrap()
+  //       .then((response) => {
+  //         navigate("/signin");
+  //         toast.success(response?.data?.message || "Registered Successfully");
+  //       });
+  //   } catch (error) {
+  //     toast.error(error.data?.message);
+  //   }
+  // };
+const handleSubmit = async (values) => {
+  try {
+    const response = await dispatch(signUp(values)).unwrap();
+
+    toast.success(response?.message || "Registered Successfully"); // ✅ use message
+    navigate("/signin");
+  } catch (error) {
+    console.log(error,"error")
+    toast.error(error || "Something went wrong"); // ✅ error.message works
+  }
+};
+
+ 
   return (
     <div className="flex h-screen bg-[#FFFFFF] font-display">
       <div className="hidden md:flex md:w-1/2 bg-[url('/signup.png')] bg-cover bg-no-repeat  flex-col justify-center items-center text-white p-8">

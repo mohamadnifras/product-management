@@ -46,9 +46,9 @@ const handleSignIn = () => {
               type="search"
               id="search"
               placeholder="Serach any things..."
-              className="relative w-full md:w-[438px] md:h-[50px] bg-white rounded-2xl px-2 text-sm placeholder:text-[#292D32] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="relative w-full md:w-[438px] h-10 md:h-[50px] bg-white rounded-2xl px-2 text-sm placeholder:text-[#292D32] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-            <h3 className="absolute md:px-11 md:py-3.5  bg-[#EDA415] text-white rounded-[19px]">Search</h3>
+            <h3 className=" absolute md:px-11   md:py-3.5 py-2 bg-[#EDA415] text-white rounded-[19px]">Search</h3>
           </div>
 
           <div className="hidden md:flex space-x-6 md:w-[50%] justify-end text-white">

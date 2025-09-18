@@ -29,7 +29,7 @@ const signInController = asyncHandler(async (req, res) => {
     const { accessToken, refreshToken, user } = await signInServices({ email, password })
     res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: 'None',
         maxAge: 5 * 60 * 1000, //5 minutese
     });
@@ -61,14 +61,14 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     res.clearCookie('accessToken', {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: false,
+        sameSite: "lax",
         path: '/'
     });
     res.clearCookie('refreshToken', {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: false,
+        sameSite: "lax",
         path: '/'
     });
 
