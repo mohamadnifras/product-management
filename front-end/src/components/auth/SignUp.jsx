@@ -6,7 +6,7 @@ import { MdOutlineEmail } from "react-icons/md";
 import { GoLock } from "react-icons/go";
 import { signUp } from "../../redux/authSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Added Link
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,54 +25,39 @@ function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const handleSubmit = async (values) => {
-  //   try {
-  //     await dispatch(signUp(values))
-  //       .unwrap()
-  //       .then((response) => {
-  //         navigate("/signin");
-  //         toast.success(response?.data?.message || "Registered Successfully");
-  //       });
-  //   } catch (error) {
-  //     toast.error(error.data?.message);
-  //   }
-  // };
-const handleSubmit = async (values) => {
-  try {
-    const response = await dispatch(signUp(values)).unwrap();
+  const handleSubmit = async (values) => {
+    try {
+      const response = await dispatch(signUp(values)).unwrap();
+      toast.success(response?.message || "Registered Successfully");
+      navigate("/signin");
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error || "Something went wrong");
+    }
+  };
 
-    toast.success(response?.message || "Registered Successfully"); // ✅ use message
-    navigate("/signin");
-  } catch (error) {
-    console.log(error,"error")
-    toast.error(error || "Something went wrong"); // ✅ error.message works
-  }
-};
-
- 
   return (
-    <div className="flex h-screen bg-[#FFFFFF] font-display">
-      <div className="hidden md:flex md:w-1/2 bg-[url('/signup.png')] bg-cover bg-no-repeat  flex-col justify-center items-center text-white p-8">
-        <div className="flex flex-col items-center text-center text-white space-y-6 p-10">
-          <h1 className="text-[50px] font-bold">Welcome Back!</h1>
-
-          <p className="text-[20px] text-gray-200 font-mono">
+    <div className="flex flex-col md:flex-row h-screen bg-[#FFFFFF] font-display">
+      {/* Left Section (Desktop only) */}
+      <div className="hidden md:flex md:w-1/2 bg-[url('/signup.png')] bg-cover bg-no-repeat flex-col justify-center items-center text-white p-8">
+        <div className="flex flex-col items-center text-center space-y-6 p-10">
+          <h1 className="text-[40px] md:text-[50px] font-bold">Welcome Back!</h1>
+          <p className="text-[16px] md:text-[20px] text-gray-200 font-mono">
             To keep connected with us please <br />
             login with your personal info
           </p>
-
           <button
             onClick={() => navigate("/signin")}
-            className="px-10 py-3 rounded-full border border-white text-white hover:bg-white hover:text-[#04364A] transition"
+            className="px-8 md:px-10 py-3 rounded-full border border-white text-white hover:bg-white hover:text-[#04364A] transition"
           >
             SIGN IN
           </button>
         </div>
       </div>
 
-      {/* Right Section */}
-      <div className="w-1/1 flex flex-col justify-center items-center p-8 bg-[#FFFFFF]">
-        <h1 className="text-3xl font-bold text-yellow-500 mb-8">
+      {/* Right Section (Form) */}
+      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-yellow-500 mb-6 md:mb-8">
           Create Account
         </h1>
 
@@ -82,10 +67,10 @@ const handleSubmit = async (values) => {
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form className="w-80 flex flex-col space-y-4">
+            <Form className="w-full max-w-sm flex flex-col space-y-4">
               {/* Name */}
               <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-[20px]">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
                   <FiUser />
                 </span>
                 <Field
@@ -103,7 +88,7 @@ const handleSubmit = async (values) => {
 
               {/* Email */}
               <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-[20px]">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
                   <MdOutlineEmail />
                 </span>
                 <Field
@@ -121,7 +106,7 @@ const handleSubmit = async (values) => {
 
               {/* Password */}
               <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-[20px]">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
                   <GoLock />
                 </span>
                 <Field
@@ -136,14 +121,13 @@ const handleSubmit = async (values) => {
                   className="text-red-500 text-sm mt-1"
                 />
               </div>
-              {/* Error Message */}
 
-              {/* Button */}
+              {/* Submit Button */}
               <div className="flex justify-center">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-yellow-500 text-white py-3 w-[200px]  rounded-full hover:bg-yellow-600 transition disabled:opacity-50"
+                  className="bg-yellow-500 text-white py-3 w-[200px] rounded-full hover:bg-yellow-600 transition disabled:opacity-50"
                 >
                   {isSubmitting ? "Signing Up..." : "SIGN UP"}
                 </button>
@@ -151,7 +135,16 @@ const handleSubmit = async (values) => {
             </Form>
           )}
         </Formik>
+
+        {/* Mobile: Already have an account? */}
+        <p className="text-sm text-gray-600 mt-4 md:hidden">
+          Already have an account?{" "}
+          <Link to="/signin" className="text-yellow-500 font-medium hover:underline">
+            Sign In
+          </Link>
+        </p>
       </div>
+
       <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );

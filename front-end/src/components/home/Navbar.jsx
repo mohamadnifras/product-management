@@ -107,31 +107,37 @@ const handleSignIn = () => {
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <div className="md:hidden bg-white shadow-lg">
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        <div className="md:hidden bg-white shadow-lg mt-2 rounded-md overflow-hidden">
+          <button
+            onClick={() => setIsWishlistOpen(true)}
+            className="w-full flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-100"
           >
-            Home
-          </a>
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            About
-          </a>
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            Services
-          </a>
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            Contact
-          </a>
+            <GoHeart size={20} />
+            <span>Wishlist ({wishlist?.length || 0})</span>
+          </button>
+          <button className="w-full flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-100">
+            <FaShoppingCart size={20} />
+            <span>Cart</span>
+          </button>
+          {user ? (
+            <button
+              onClick={handleSignOut}
+              disabled={loading}
+              className="w-full flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-100"
+            >
+              <FiLogOut size={20} />
+              <span>Sign Out</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleSignIn}
+              disabled={loading}
+              className="w-full flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-100"
+            >
+              <FiLogIn size={20} />
+              <span>Sign In</span>
+            </button>
+          )}
         </div>
       )}
       <Wishlist 
